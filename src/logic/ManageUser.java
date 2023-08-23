@@ -1,5 +1,6 @@
 package logic;
 
+import model.SessionByUser;
 import model.User;
 
 import java.io.File;
@@ -8,36 +9,53 @@ import java.io.IOException;
 public class ManageUser {
     private User user;
 
-    private final String dirNameUserActiv = "data\\" + user.getNickname() + "$$" + user.getPassword();
-    private final String dirNameUserArchiv = "data\\archiv\\" + user.getNickname() + "$$" + user.getPassword();
-    private final String fileNameUserActiv = "data\\" + user.getNickname() + "$$" + user.getPassword() + "\\bez.dat";
-    private final String fileNameUserArchiv = "data\\archiv\\" + user.getNickname() + "$$" + user.getPassword() + "\\bez.dat";
+    private String dirNameUserActiv;
+    private String dirNameUserArchiv;
+    private String fileNameUserActiv;
+    private String fileNameUserArchiv;
 
-    private File dir = new File(dirNameUserActiv);
-    private File dirinArchiv = new File(dirNameUserArchiv);
+    private File dir;
+    private File dirinArchiv;
 
-    private File file = new File(fileNameUserActiv);
-    private File fileinArchiv = new File(fileNameUserArchiv);
+    private File file;
+    private File fileinArchiv;
 
 
     public ManageUser(User user) {
         this.user = user;
+        dirNameUserActiv = "data\\" + user.getNickname();
+        dirNameUserArchiv = "data\\archiv\\" + user.getNickname();
+        fileNameUserActiv = "data\\" + user.getNickname() + "\\task.dat";
+        fileNameUserArchiv = "data\\archiv\\" + user.getNickname() + "\\task.dat";
+
+        dir = new File(dirNameUserActiv);
+        dirinArchiv = new File(dirNameUserArchiv);
+
+        file = new File(fileNameUserActiv);
+        fileinArchiv = new File(fileNameUserArchiv);
+
     }
 
-    public void createNewUser() {
+    public boolean createNewUser() {
         if (checkRegistration()) {
-            if (!dirinArchiv.exists()) {
-                if (dirinArchiv.mkdir()) {
-                    WriterTaskSerial wt = new WriterTaskSerial();
+            if (!dir.exists()) {
+                if (dir.mkdirs()) {
+                    WriterSerial wt = new WriterSerial();
                     wt.writeUserTask(user);
+                    SessionByUser session = new SessionByUser(user);
+                    wt.writeUserSession(user, session);
                     System.out.println("ManageUser: Username is created!");
+                    return true;
                 } else {
                     System.out.println("ManageUser: Failed to create username!");
+                    return false;
                 }
             } else {
                 System.out.println("ManageUser: Username/password Exist!");
+                return false;
             }
         }
+        return false;
     }
 
     public void deleteUserforUSER() {
@@ -73,5 +91,15 @@ public class ManageUser {
         if (dir.exists())
             return false;
         else return true;
+    }
+
+    public boolean checkAutorisation() {
+        if (dir.exists())
+            return true;
+        else return false;
+    }
+
+    public String getHashUser() {
+        return user.getHashUser();
     }
 }

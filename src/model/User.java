@@ -1,17 +1,22 @@
 package model;
 
+import org.apache.commons.codec.digest.DigestUtils;
+
 import java.io.Serializable;
 
 public class User implements Serializable {
     private String nickname;
     private String password;
     private ListTasks listTasks;
+    private String hashUser;
 
 
     public User(String nickname, String password) {
         this.nickname = nickname;
         this.password = password;
-        listTasks = new ListTasks();
+        this.listTasks = new ListTasks();
+        String nickpass = nickname+":"+password;
+        setHashUser(nickpass);
     }
 
     public String getNickname() {
@@ -38,4 +43,11 @@ public class User implements Serializable {
         this.listTasks = listTasks;
     }
 
+    public String getHashUser() {
+        return hashUser;
+    }
+
+    private void setHashUser(String nickpass) {
+        this.hashUser = DigestUtils.md5Hex(nickpass);
+    }
 }

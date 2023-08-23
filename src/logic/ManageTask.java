@@ -15,6 +15,10 @@ public class ManageTask {
         this.user = user;
         listTasks = new ListTasks();
     }
+    public ManageTask(String nickname) {
+        user = new User(nickname, null);
+        listTasks = new ListTasks();
+    }
 
     public ListTasks getListTasks() {
         if (checkAutorization()) {
@@ -50,7 +54,8 @@ public class ManageTask {
     }
 
     private boolean checkAutorization() {
-        String dirName = "data\\" + user.getNickname() + "$$" + user.getPassword();
+        String dirName = "data\\" + user.getNickname();
+
         File file = new File(dirName);
         if (file.exists()) {
             readTaskByFile();
@@ -59,7 +64,7 @@ public class ManageTask {
     }
 
     private void readTaskByFile() {
-        ReaderTaskSerial readTaskSerial = new ReaderTaskSerial();
+        ReaderSerial readTaskSerial = new ReaderSerial();
         this.user = readTaskSerial.readMyTasks(user);
         this.listTasks = user.getListTasks();
         System.out.println("ManageTask: Read Task by file");
@@ -67,7 +72,7 @@ public class ManageTask {
 
     private void writeTaskByFile() {
         user.setListTasks(listTasks);
-        WriterTaskSerial writerTaskSerial = new WriterTaskSerial();
+        WriterSerial writerTaskSerial = new WriterSerial();
         writerTaskSerial.writeUserTask(user);
         System.out.println("ManageTask: Write Task in file");
     }
