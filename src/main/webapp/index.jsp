@@ -4,31 +4,17 @@
 <%@ page import="logic.Autorisation" %>
 <%@ page import="java.util.Collections" %>
 <%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" language="java" %>
-
-
 <!DOCTYPE html>
 <html>
-
 <head>
-    <title>TO DO Task Manager</title>
-
-    <%--        <link rel="stylesheet" type="text/css" href="@{/css/style.css}"/>--%>
-    <%--    <link rel="stylesheet" type="text/css" href="@{/css/w3.css}"/>--%>
-
-    <%--    <link rel="stylesheet" type="text/css" href="@{/webjars/bootstrap/css/bootstrap.min.css}"/>--%>
+    <title>TODO Task Manager</title>
     <link rel="stylesheet" type="text/css" href="/css/style.css"/>
     <link rel="stylesheet" type="text/css" href="/css/w3.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css"
           integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A=="
           crossorigin="anonymous" referrerpolicy="no-referrer"/>
-
-
-    <!--  <script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>-->
-    <!--  <script type="text/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>-->
 </head>
-
 <body class="w3-light-grey">
-
 <%
     Cookie[] cookies = request.getCookies();
     String cookieName = "auto-user";
@@ -53,7 +39,6 @@
                 "<div class=\"w3-container w3-teal\">\n" +
                         "<h4>Form autorisation</h4>\n" +
                         "</div>\n" +
-
                         "<form class=\"w3-container\" method=\"post\" action=\"/autorisation\">\n" +
                         "<div class=\"p-3\">\n" +
                         "<div class=\"form-group row\">" +
@@ -67,21 +52,25 @@
                         "</div>\n" +
                         "<div class=\"text-center\" >\n" +
                         "<button type = \"submit\" class=\"w3-btn w3-blue-grey\" >Log in</button >\n" +
-
                         "<a href=\"/createuser\">Create New User</a>" +
                         "</div >\n" +
                         "</div >\n" +
                         "</form >\n"
-
         );
     }
 
+    if (request.getAttribute("messageErrorAuto") != null) {
+        out.println(
+                "<div class=\"w3-container w3-red\">\n" +
+                        "<h4>" + request.getAttribute("messageErrorAuto") + "</h4>\n" +
+                        "</div>\n"
+        );
+    }
     if (request.getAttribute("newuser") == "true") {
         out.println(
                 "<div class=\"w3-container w3-teal\">\n" +
                         "<h4>Form registration</h4>\n" +
                         "</div>\n" +
-
                         "<form class=\"w3-container\" method=\"post\" action=\"/createnewusercomplete\">\n" +
                         "<div class=\"p-3\">\n" +
                         "<div class=\"form-group row\">" +
@@ -130,22 +119,17 @@
                 "</div>\n");
     }
 %>
-
-
 <div>
+    <h3 class="w3-container w3-indigo">Active Task</h3>
     <table>
-        <h3 class="w3-container w3-indigo">Active Task</h3>
         <thead class="thead-light">
         <tr>
             <th scope="col"></th>
             <th scope="col">Title</th>
             <th scope="col">Description</th>
-            <%--            <th scope="col">Delete</th>--%>
         </tr>
         </thead>
         <tbody>
-
-
         <%
             for (Cookie c : cookies) {
                 if (cookieName.equals(c.getName())) {
@@ -156,12 +140,9 @@
             if (currentCookie != null) {
                 String[] cookieArray = currentCookie.getValue().split("&&");
                 String nickname = cookieArray[0];
-
                 ManageTask mt = new ManageTask(nickname);
-
                 List<Task> listActivTask = mt.getListTasks().getActivTasks();
                 Collections.reverse(listActivTask);
-
                 if (listActivTask.size() > 0)
                     for (Task activeTask : listActivTask) {
                         out.println("<tr>" +
@@ -170,7 +151,6 @@
                                 "<td>" + activeTask.getTitle() + "</td>\n" +
                                 "<td>" + activeTask.getDescription() + "</td>\n" +
                                 "</tr>\n");
-
                     }
                 else {
                     out.println("<tr>" +
@@ -178,22 +158,15 @@
                             "<td>-</td>\n" +
                             "</tr>\n");
                 }
-
-
             }
-
         %>
-
-        </tr>
-
         </tbody>
     </table>
 </div>
 
-
 <div>
+    <h4 class="w3-container w3-grey">Archiv Task</h4>
     <table class="w3-padding-16">
-        <h4 class="w3-container w3-grey">Archiv Task</h4>
         <thead class="thead-light">
         <tr>
             <th scope="col"></th>
@@ -222,149 +195,18 @@
                                 "title=\"Delete this task\" class=\"fa-regular fa-trash-can icon-dark btn-delete\"></a>\n" +
                                 "</td>" +
                                 "</tr>\n");
-
                     }
                 else {
                     out.println("<tr>" +
                             "<td>-</td>\n" +
                             "<td>-</td>\n" +
-                            "<td>-</td>" +
+                            "<td>-</td>\n" +
                             "</tr>\n");
                 }
-
-
             }
-
         %>
-
         </tbody>
     </table>
-
-
 </div>
-
-
-<!--///////////////////////////////////-->
-
-
-<!--  <div th:replace="fragments/header :: header"></div>-->
-
-<!--  <div class="container-fluid" style="max-width: 900px; margin: 0 auto;">-->
-<!--    <h2 class="text-center">Tutorials</h2>-->
-
-<!--    <div th:if="${message != null}" class="alert alert-success alert-dismissible fade show text-center message"-->
-<!--      role="alert">-->
-<!--      [[${message}]]-->
-<!--      <button type="button" class="close btn-sm" data-dismiss="alert" aria-label="Close">-->
-<!--        <span aria-hidden="true">&times;</span>-->
-<!--      </button>-->
-<!--    </div>-->
-
-<!--    <div class="my-3">-->
-<!--      <form th:action="@{/tutorials}">-->
-<!--        <div class="row d-flex">-->
-<!--          <div class="col-md-6 mt-2">-->
-<!--            <div class="search">-->
-<!--              <i class="fa fa-search"></i>-->
-<!--              <input id="keyword" type="search" name="keyword" th:value="${keyword}" required class="form-control"-->
-<!--                placeholder="Enter keyword">-->
-<!--              <button type="submit" class="btn btn-secondary">Search</button>-->
-<!--            </div>-->
-<!--          </div>-->
-<!--          <div class="col-md-6 mt-2">-->
-<!--            <button id="btnClear" class="btn btn-info">Clear</button>-->
-<!--          </div>-->
-<!--        </div>-->
-<!--      </form>-->
-<!--    </div>-->
-
-<!--    <div>-->
-<!--&lt;!&ndash;            th:if="${tutorials.size() > 0}">&ndash;&gt;-->
-<!--      <table class="table table-hover table-responsive-xl">-->
-<!--        <thead class="thead-light">-->
-<!--          <tr>-->
-<!--            <th scope="col">Id</th>-->
-<!--            <th scope="col">Title</th>-->
-<!--            <th scope="col">Description</th>-->
-<!--&lt;!&ndash;            <th scope="col">Level</th>&ndash;&gt;-->
-<!--&lt;!&ndash;            <th scope="col">Published</th>&ndash;&gt;-->
-<!--            <th scope="col">Actions</th>-->
-<!--          </tr>-->
-<!--        </thead>-->
-<!--        <tbody>-->
-<!--          <tr>-->
-<!--&lt;!&ndash;                  th:each="tutorial : ${tutorials}">&ndash;&gt;-->
-<!--            <th scope="row">[[${tutorial.id}]]</th>-->
-<!--            <td>[[${tutorial.title}]]</td>-->
-<!--            <td>[[${tutorial.description}]]</td>-->
-<!--&lt;!&ndash;            <td>[[${tutorial.level}]]</td>&ndash;&gt;-->
-<!--            <td>-->
-<!--&lt;!&ndash;              <a th:if="${tutorial.published == true}" class="fa-regular fa-square-check"&ndash;&gt;-->
-<!--&lt;!&ndash;                th:href="@{'/tutorials/' + ${tutorial.id} + '/published/false'}" title="Disable this tutorial"></a>&ndash;&gt;-->
-<!--&lt;!&ndash;              <a th:if="${tutorial.published == false}" class="fa-regular fa-square icon-dark"&ndash;&gt;-->
-<!--&lt;!&ndash;                th:href="@{'/tutorials/' + ${tutorial.id} + '/published/true'}" title="Enable this tutorial"></a>&ndash;&gt;-->
-<!--            </td>-->
-<!--            <td>-->
-<!--              <a th:href="@{'/tutorials/' + ${tutorial.id}}" title="Edit this tutorial"-->
-<!--                class="fa-regular fa-pen-to-square icon-dark"></a>-->
-<!--              &nbsp;-->
-<!--              <a th:href="@{'/tutorials/delete/' + ${tutorial.id}}" th:tutorialTitle="${tutorial.title}" id="btnDelete"-->
-<!--                title="Delete this tutorial" class="fa-regular fa-trash-can icon-dark btn-delete"></a>-->
-<!--            </td>-->
-<!--          </tr>-->
-<!--        </tbody>-->
-<!--      </table>-->
-<!--    </div>-->
-
-<!--    <div class="" th:unless="${tutorials.size() > 0}">-->
-<!--      <span>No tutorials found!</span>-->
-<!--    </div>-->
-<!--  </div>-->
-
-<!--  <div class="modal fade text-center" id="confirmModal">-->
-<!--    <div class="modal-dialog">-->
-<!--      <div class="modal-content">-->
-<!--        <div class="modal-header">-->
-<!--          <h5 class="modal-title">Delete Confirmation</h5>-->
-<!--          <button type="button" class="close" data-dismiss="modal">-->
-<!--            <span aria-hidden="true">&times;</span>-->
-<!--          </button>-->
-<!--        </div>-->
-
-<!--        <div class="modal-body">-->
-<!--          <span id="confirmText"></span>-->
-<!--        </div>-->
-
-<!--        <div class="modal-footer">-->
-<!--          <a type="button" id="yesBtn" class="btn btn-danger">Yes</a>-->
-<!--          <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--    </div>-->
-<!--  </div>-->
-
-<!--  <div th:replace="fragments/footer :: footer"></div>-->
-
-<!--  <script type="text/javascript">-->
-<!--    $(document).ready(function () {-->
-<!--      $(".btn-delete").on("click", function (e) {-->
-<!--        e.preventDefault();-->
-<!--        link = $(this);-->
-
-<!--        tutorialTitle = link.attr("tutorialTitle");-->
-<!--        $("#yesBtn").attr("href", link.attr("href"));-->
-<!--        $("#confirmText").html("Do you want to delete the Tutorial \<strong\>" + tutorialTitle + "\<\/strong\>?");-->
-<!--        $("#confirmModal").modal();-->
-<!--      });-->
-
-<!--      $("#btnClear").on("click", function (e) {-->
-<!--        e.preventDefault();-->
-<!--        $("#keyword").text("");-->
-<!--        window.location = "[[@{/tutorials}]]";-->
-<!--      });-->
-<!--    });-->
-<!--  </script>-->
-
 </body>
-
 </html>

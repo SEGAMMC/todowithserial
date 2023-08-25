@@ -16,15 +16,13 @@ import java.io.IOException;
 @WebServlet(name = "autorisation", value = "/autorisation")
 public class autorisation extends HttpServlet {
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-//        RequestDispatcher requestDispatcher = request.getRequestDispatcher("index.jsp");
-//        requestDispatcher.forward(request, response);
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         response.sendRedirect("/");
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String nickname = request.getParameter("nicknamelogin");
         String pass = request.getParameter("passlogin");
 
@@ -32,9 +30,13 @@ public class autorisation extends HttpServlet {
         if (!mu.checkAutorisation()) System.out.println("Servlet autorisation: User not Found!");
 
         Autorisation auto = new Autorisation();
-        String newCookie = auto.getNewSession(nickname, pass);
-        Cookie cookie = new Cookie("auto-user", newCookie);
-        response.addCookie(cookie);
+        if (auto.checkLogPass(nickname, pass)) {
+            String newCookie = auto.getNewSession(nickname, pass);
+            Cookie cookie = new Cookie("auto-user", newCookie);
+            response.addCookie(cookie);
+        } else {
+            request.setAttribute("messageErrorAuto","Invalid login or password");
+        }
 
         doGet(request, response);
     }
